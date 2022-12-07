@@ -213,6 +213,7 @@ void clusterQA(TString period = "LHC16g",
    cN2->cd();
  
    for (Int_t iHist = 0; iHist < 5; iHist ++) {
+     hNClust2[iHist]->GetYaxis()->SetRangeUser(0,0.054);
      hNClust2[iHist]->Draw(Form("%s", iHist == 0 ? "" : "same"));
    }
 

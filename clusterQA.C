@@ -7,18 +7,21 @@
  *
  */
 void clusterQA(TString period = "LHC16g", 
-                TString cut = "all", 
-	        Double_t emin = 0.3, 
-	        Int_t nCellMin = 1)
+	        Bool_t isGood =  kFALSE,
+                TString cut = "all")
 {
    std::vector<Int_t> runNumbers, zeroNumbers;
    Int_t nn;
+   
+   const Double_t emin = 0.3;
+   const Int_t nCellMin = 1;
 
    ifstream ff;
    ofstream ffzero;
 
     //printf("%s.txt\n", period.Data());
-    ff.open(Form("./datasets/%s.txt", period.Data()));
+    ff.open(Form("./datasets/%s%s.txt", period.Data(),
+                       isGood ? "_good" : ""));
     while ( ff >> nn) { 
       // cout << nn << endl;
       runNumbers.emplace_back(nn);
@@ -160,7 +163,7 @@ void clusterQA(TString period = "LHC16g",
    auto *t1 = new TPaveText(0.2, 0.92, 0.8, 1.0, "brNDC"); // left-up   
    t1->SetBorderSize(0);
    t1->SetFillColor(kWhite);
-   t1->AddText(Form("Average energy of clusters, %s", period.Data()));
+   t1->AddText(Form("Mean energy of reconstructed photons, %s", period.Data()));
    t1->Draw();
   
    cen->BuildLegend(0.82, 0.2, 0.9, 0.45);
@@ -192,7 +195,7 @@ void clusterQA(TString period = "LHC16g",
    auto *t2 = new TPaveText(0.2, 0.92, 0.8, 1.0, "brNDC"); // left-up   
    t2->SetBorderSize(0);
    t2->SetFillColor(kWhite);
-   t2->AddText(Form("Average number of clusters per event, %s, E > %0.1f, N_{cells} #geq %d", period.Data(), emin, nCellMin));
+   t2->AddText(Form("Number of PHOS clusters per event, %s, E > %0.1f, N_{cells} #geq %d", period.Data(), emin, nCellMin));
    t2->Draw();
  
    TString cNPath = Form("%s/cN_%s", figDir.Data(), cut.Data());
@@ -222,7 +225,7 @@ void clusterQA(TString period = "LHC16g",
    auto *t22 = new TPaveText(0.2, 0.92, 0.8, 1.0, "brNDC"); // left-up   
    t22->SetBorderSize(0);
    t22->SetFillColor(kWhite);
-   t22->AddText(Form("Average number of clusters per event, %s, E > %0.1f, N_{cells} #geq %d", period.Data(), emin, nCellMin));
+   t22->AddText(Form("Number of reconstructed photons per event"));
    t22->Draw();
  
    TString cNPath2 = Form("%s/cN2_%s", figDir.Data(), cut.Data());
@@ -249,7 +252,7 @@ void clusterQA(TString period = "LHC16g",
    auto *t3 = new TPaveText(0.2, 0.92, 0.8, 1.0, "brNDC"); // left-up   
    t3->SetBorderSize(0);
    t3->SetFillColor(kWhite);
-   t3->AddText(Form("Average number of cells in cluster, %s, E > %0.1f, N_{cells} > %d", period.Data(), emin, nCellMin));
+   t3->AddText(Form("Number of cells in a cluster, %s, E > %0.1f, N_{cells} > %d", period.Data(), emin, nCellMin));
    t3->Draw();
   
    cNcell->BuildLegend(0.82, 0.4, 0.9, 0.65);   
@@ -259,7 +262,11 @@ void clusterQA(TString period = "LHC16g",
    cNcell->SaveAs(Form("%s.eps",  cNcellPath.Data()));   
    cNcell->SaveAs(Form("%s.pdf",  cNcellPath.Data()));
 
-   auto *fout = TFile::Open(Form("ROOT/QA/Cluster_QA_%s_%s.root", period.Data(), cut.Data()), "recreate");
+   auto *fout = TFile::Open(Form("ROOT/QA/Cluster_QA_%s_%s%s.root", 
+                          period.Data(), 
+		          cut.Data(), 
+		          isGood ? "_good" : ""),
+		          "recreate");
  
    hEvents->Write();
 

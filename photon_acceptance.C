@@ -23,7 +23,11 @@
 
      ftemp = TFile::Open(Form("../MergedResults_MC/%s/%d/AnalysisResults.root", mcPeriod.Data(), run));
 
-     if (!ftemp) continue;
+     if (!ftemp) {
+       histAcc->SetBinContent(iBin + 1, 0);
+       histAcc->SetBinError(iBin + 1, 0);
+       continue;
+     }
 
      auto dd  = (THashList*)ftemp->Get("Data");
      auto dd2 = (THashList*)ftemp->Get("Data2");

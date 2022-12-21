@@ -49,7 +49,7 @@ void mc_purities(TString mcPeriod = "LHC16g", Bool_t isHardBins = kFALSE, TStrin
 
      pEff->SetName(Form("pEff_%s", cutName.Data()));
      
-     pEff->SetTitle(Form("%s;p_{T}, GeV/c;#gamma purity, P_{#gamma}=N_{#gamma}/N_{all}", cutTitle.Data()));
+     pEff->SetTitle(Form("%s;p_{T}, GeV/c;P_{#gamma}=N_{#gamma}/N_{all}", cutTitle.Data()));
      pEff->SetLineColor(cutColor);
      pEff->SetMarkerColor(pEff->GetLineColor());
      pEff->SetMarkerStyle(cutMarkerStyle);

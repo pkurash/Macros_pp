@@ -1,13 +1,9 @@
-std::vector<double> xbins;
-std::vector<std::tuple<TString, TString, EColor, EMarkerStyle>> cuts;
-std::vector<std::tuple<TString, TString, EMarkerStyle>> modules;
-TList *hlist, *hlist_cc;
+#include "cuts.h"
 
+TList *hlist, *hlist_cc;
 Double_t getAcceptance(TString mcPeriod);
-void TransformTodNdPt(TH1* h); 
-void setXbins(TString);
-void setStyle();
 void DrawEffs(TString mcPeriod);
+
 void detection_efficiency(TString mcPeriod = "LHC16g", Bool_t isHardBins = kFALSE, TString sqrts = "13TeV")
 { 
 
@@ -101,41 +97,6 @@ Double_t getAcceptance(TString mcPeriod)
 
 }
 
-void TransformTodNdPt(TH1* h) {
-   for (Int_t i = 0; i < h->GetNbinsX(); i++) {
-      h->SetBinContent(i + 1, h->GetBinContent(i+1)/h->GetBinWidth(i+1));
-      h->SetBinError(i + 1,   h->GetBinError(i+1)/h->GetBinWidth(i+1));
-   }
-}
-
-void setXbins(TString sqrts)
-{
- if (sqrts.CompareTo("13TeV") == 0) {
-   xbins = {0.8, 1, 1.2, 1.4, 1.6, 1.8,
-            2, 2.2, 2.4, 2.6, 2.8, 3, 3.2, 3.4, 3.6, 3.8, 
-            4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 
-            10, 11, 12, 13, 15, 20, 25};
-  } else if (sqrts.CompareTo("7TeV") == 0) {
-    xbins = {0.8, 1, 1.2, 1.4, 1.6, 1.8, 
-             2, 2.2, 2.4, 2.6, 2.8, 
-             3, 3.2, 3.4, 3.6, 3.8, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 
-             8, 8.5, 9, 9.5, 10, 11, 12, 13, 15, 20};
-  }
-}
-
-void setStyle()
-{
-    cuts.emplace_back("all", "no cuts", kRed, kFullCircle);
-    cuts.emplace_back("cpv", "cpv", kBlue, kFullSquare);
-    cuts.emplace_back("disp", "disp", kGreen, kFullTriangleUp);
-    cuts.emplace_back("both", "cpv+disp", kMagenta, kFullTriangleDown);
-       
-    modules.emplace_back("", "", kOpenCircle);
-    modules.emplace_back("_mod1", "M1", kOpenCircle);
-    modules.emplace_back("_mod2", "M2", kOpenSquare);
-    modules.emplace_back("_mod3", "M3", kOpenTriangleUp);
-    modules.emplace_back("_mod4", "M4", kOpenTriangleDown);
-}
 
 void DrawEffs(TString mcPeriod)
 {
